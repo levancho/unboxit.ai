@@ -55,8 +55,8 @@ function render(t){
  scenery();
  projected=points.map(project);
  const focus=hovered??selected,view=q('#nn-view').value,advanced=mode==='advanced';
- const progress=clock-pulse,cycle=SHAPE.length*.65+1.5;
- const scan=advanced&&flowOn?((clock-flowStart)*flowSpeed)%cycle:progress;
+ const progress=clock-pulse,cycle=SHAPE.length*.65+.35;
+ const scan=flowOn?((clock-flowStart)*flowSpeed)%cycle:-99;
  edges.forEach((e,idx)=>{
   let a=projected[e.a],b=projected[e.b],weight=model.weights[e.l][e.j][e.i],linked=focus===e.a||focus===e.b;
   if(view==='focused'&&focus!=null&&!linked)return;
@@ -84,7 +84,7 @@ function render(t){
  let occupied=[];for(let l=0;l<SHAPE.length;l++){let p=project({x:(l-(SHAPE.length-1)/2)*(advanced?1.72:2.6),y:advanced?-2.45:-1.85,z:0});if(occupied.some(x=>Math.abs(p.x-x)<64))continue;occupied.push(p.x);ctx.font='11px Arial';ctx.textAlign='center';ctx.fillStyle=advanced?`rgb(${palette[l]})`:'#9aa9c8';ctx.fillText(SHAPE[l]+(l===0?' INPUTS':l===SHAPE.length-1?' OUTPUTS':' · H'+l),p.x,p.y);ctx.textAlign='left'}
  if(advanced){
   const layer=Math.min(SHAPE.length-1,Math.max(0,Math.floor(scan/.65)));
-  const label=flowOn?names[layer]:'Manual signal';if(q('#nn-flow-stage').textContent!==label)q('#nn-flow-stage').textContent=label;
+  const label=flowOn?names[layer]:'Flow paused';if(q('#nn-flow-stage').textContent!==label)q('#nn-flow-stage').textContent=label;
  }
 }
 requestAnimationFrame(render);new IntersectionObserver(entries=>{visible=entries[0].isIntersecting}).observe(root);
@@ -94,7 +94,7 @@ function grid(){q('#pixel-grid').innerHTML=input.map((v,i)=>`<button type="butto
 function paint(el){let i=Number(el.dataset.pixel);input[i]=drawValue;el.classList.toggle('on',!!drawValue);el.setAttribute('aria-pressed',String(!!drawValue));calculate()}
 q('#pixel-grid').addEventListener('pointerdown',e=>{if(!e.target.matches('[data-pixel]'))return;e.preventDefault();drawing=true;drawValue=input[Number(e.target.dataset.pixel)]?0:1;paint(e.target)});q('#pixel-grid').addEventListener('pointermove',e=>{if(!drawing)return;let el=document.elementFromPoint(e.clientX,e.clientY);if(el?.matches('[data-pixel]'))paint(el)});q('#pixel-grid').addEventListener('click',e=>{if(e.detail===0&&e.target.matches('[data-pixel]')){drawValue=input[Number(e.target.dataset.pixel)]?0:1;paint(e.target)}});window.addEventListener('pointerup',()=>drawing=false);window.addEventListener('pointercancel',()=>drawing=false);
 document.querySelectorAll('[data-digit]').forEach(b=>b.onclick=()=>{input=TEMPLATES[Number(b.dataset.digit)].slice();grid();calculate();send()});q('#nn-clear').onclick=()=>{input=Array(35).fill(0);grid();calculate()};q('#nn-noise').onclick=()=>{for(let j=0;j<4;j++){let i=Math.floor(Math.random()*35);input[i]=1-input[i]}grid();calculate();send()};
-function send(){pulse=clock;flowStart=clock;q('#nn-status').textContent=paused?'Prediction calculated. Resume motion to watch the signal.':'Input pixels pass through '+(SHAPE.length-2)+' hidden layers to produce three scores.';calculate()}q('#nn-signal').onclick=send;
+function send(){pulse=clock;flowStart=clock;flowOn=true;reflectFlow();q('#nn-status').textContent=paused?'Prediction calculated. Resume motion to watch the signal.':'Input pixels pass through '+(SHAPE.length-2)+' hidden layers to produce three scores.';calculate()}q('#nn-signal').onclick=send;
 q('#nn-train').onclick=()=>{if(running)return;running=true;q('#mode-beginner').disabled=true;q('#mode-advanced').disabled=true;q('#nn-train').disabled=true;q('#nn-reset').disabled=true;let target=model.rounds+300;q('#nn-status').textContent='Learning from noisy examples of 0, 1, and 8…';function step(){for(let i=0;i<15;i++)lastLoss=model.trainBatch(12,Number(q('#nn-rate').value));q('#nn-loss').textContent=lastLoss.toFixed(4);calculate();if(model.rounds<target)requestAnimationFrame(step);else{running=false;q('#mode-beginner').disabled=false;q('#mode-advanced').disabled=false;q('#nn-train').disabled=false;q('#nn-reset').disabled=false;q('#nn-status').textContent='Training complete. Try adding noise or drawing your own 0, 1, or 8. Other digits are outside this model’s training.';pulse=clock}}step()};q('#nn-reset').onclick=()=>{model=models[mode]=new NeuralModel(mode==='advanced'?187:87,SHAPE);disabledNeuron=null;lastLoss=null;q('#nn-loss').textContent='—';calculate();q('#nn-status').textContent='Weights reset. The scores are guesses until you train the network.'};
 function inspect(){let box=q('#nn-inspector');let dp=selected==null?null:points[selected];q('#nn-disable').disabled=!dp||dp.l===0||dp.l===SHAPE.length-1;const off=dp&&disabledNeuron?.l===dp.l&&disabledNeuron?.i===dp.i;q('#nn-disable').textContent=off?'Restore neuron':'Switch off neuron';q('#nn-disable').setAttribute('aria-pressed',String(!!off));if(selected==null){box.innerHTML='<div class="inspect-orbit">◎</div><h3>Follow a thought.</h3><p>Select a glowing neuron to inspect its number and the connections feeding into it.</p><small>A neuron is a calculation, not a brain cell.</small>';return}let p=points[selected],a=active(p),z=result.sums[p.l][p.i];q('#nn-layer').value=p.l;fillNeuronList(p.l,p.i);let incoming=p.l?model.weights[p.l-1][p.i].map((weight,i)=>({weight,i,contribution:weight*result.acts[p.l-1][i]})).sort((a,b)=>Math.abs(b.contribution)-Math.abs(a.contribution)).slice(0,3):[];box.innerHTML=`<span class="inspector-eyebrow">${names[p.l]}</span><h3>${p.l===0?'Pixel':p.l===SHAPE.length-1?'Digit '+DIGITS[p.i]:'Neuron'} ${p.l===SHAPE.length-1?'':String(p.i+1).padStart(2,'0')}</h3><div class="activation">${a.toFixed(3)}<small>${p.l===SHAPE.length-1?'Output probability':'Activation'}</small></div><p>${p.l===0?'An illuminated pixel sends 1; a dark pixel sends 0.':p.l===SHAPE.length-1?'The final scores are converted into probabilities across the three possible digits.':'This neuron combines incoming values, adds a bias, and passes the result through a squashing function.'}</p>${p.l>0?`<div class="neuron-math advanced-only"><span>Σ(w × input) + b</span><b>${z.toFixed(3)}</b></div><div class="neuron-math advanced-only"><span>Bias</span><b>${model.biases[p.l-1][p.i].toFixed(3)}</b></div><h4 class="advanced-only">Strongest contributions</h4>${incoming.map(e=>`<div class="contribution advanced-only"><span>N${e.i+1} · w ${e.weight.toFixed(2)}</span><b class="${e.contribution<0?'negative':'positive'}">${e.contribution>=0?'+':''}${e.contribution.toFixed(3)}</b></div>`).join('')}`:''}`}
 function fillNeuronList(layer,value=0){let s=q('#nn-neuron');if(s.options.length!==SHAPE[layer]||s.dataset.layer!==String(layer)){s.innerHTML=Array.from({length:SHAPE[layer]},(_,i)=>`<option value="${i}">${Number(layer)===0?'Pixel':'Neuron'} ${i+1}</option>`).join('');s.dataset.layer=layer}s.value=value}
@@ -114,13 +114,13 @@ function setMode(next){
  q('#mode-beginner').setAttribute('aria-pressed',String(mode==='beginner'));q('#mode-advanced').setAttribute('aria-pressed',String(mode==='advanced'));
  q('#nn-view').value='flow';spread=1;zoom=1;yaw=mode==='advanced'?-.48:-.75;pitch=mode==='advanced'?.32:.24;
  q('#nn-spread').value=1;q('#nn-zoom').value=1;q('#nn-loss').textContent=lastLoss==null?'—':lastLoss.toFixed(4);
- build();fillNeuronList(0);calculate();pulse=clock;
+ build();fillNeuronList(0);calculate();pulse=clock;flowStart=clock;
  q('#nn-status').textContent=mode==='advanced'?'Deep network: four hidden layers, 7,408 connections. Train this separate model, inspect any neuron, or switch one off to test its influence.':'Pick a digit, teach the network, and watch the signal. Brighter neurons have stronger activations.';
  resize();
 }
 q('#nn-layout').onchange=e=>{layout=e.target.value;build();inspect()};
-q('#nn-flow').onclick=()=>{flowOn=!flowOn;if(flowOn&&paused)q('#motion').click();q('#nn-flow').textContent=flowOn?'Live flow: On':'Live flow: Off';q('#nn-flow').setAttribute('aria-pressed',String(flowOn))};
-q('#nn-flow').textContent=flowOn?'Live flow: On':'Live flow: Off';q('#nn-flow').setAttribute('aria-pressed',String(flowOn));
+function reflectFlow(){q('#nn-flow').textContent=flowOn?'Live flow: On':'Live flow: Off';q('#nn-flow').setAttribute('aria-pressed',String(flowOn))}
+q('#nn-flow').onclick=()=>{flowOn=!flowOn;if(flowOn){flowStart=clock;if(paused)q('#motion').click()}reflectFlow()};reflectFlow();
 q('#nn-speed').oninput=e=>flowSpeed=Number(e.target.value);
 q('#mode-beginner').onclick=()=>setMode('beginner');q('#mode-advanced').onclick=()=>setMode('advanced');q('#nn-rate').oninput=e=>q('#nn-rate-value').textContent=Number(e.target.value).toFixed(2);
 q('#nn-disable').onclick=()=>{if(selected==null)return;const p=points[selected];if(p.l===0||p.l===SHAPE.length-1)return;const before=result.probabilities.slice();const restore=disabledNeuron?.l===p.l&&disabledNeuron?.i===p.i;disabledNeuron=restore?null:{l:p.l,i:p.i};calculate();const delta=result.probabilities.map((v,i)=>(v-before[i])*100);q('#nn-status').textContent=(restore?'Neuron restored.':'Neuron switched off.')+' Probability changes: '+DIGITS.map((v,i)=>v+': '+(delta[i]>=0?'+':'')+delta[i].toFixed(2)+' percentage points').join(' · ')};
