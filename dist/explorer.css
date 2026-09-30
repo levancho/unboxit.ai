@@ -16,9 +16,17 @@
 .deep-controls label{display:flex;gap:8px;align-items:center;font-size:12px;color:#b5c8e5}
 .deep-controls select{width:auto;font-size:12px;padding:7px;background:#1b2940;border-color:#425879}
 .deep-controls input{width:64px;accent-color:#90eaf9;margin:0}
-.explorer #nn-flow[aria-pressed=true]{color:#99f0ff;background:#173642;border-color:#397783}
+.explorer #nn-flow[aria-checked=true]{color:#99f0ff;background:#173642;border-color:#397783}
 [data-mode=advanced] .advanced-summary{background:linear-gradient(100deg,#122536,#201831)}
 .explorer-top{flex-wrap:wrap}
 .explorer.expanded[data-mode=advanced] #network3d{height:0}
 .explorer.expanded .deep-controls{flex-shrink:0}
 @media(max-width:650px){[data-mode=advanced] #network3d{height:410px}.deep-hud{top:35px;left:12px;right:12px}.deep-hud span{font-size:9px}.deep-hud b{font-size:10px}.deep-controls{gap:9px;padding:5px 8px 12px}.deep-controls label{font-size:11px}.explorer.expanded[data-mode=advanced] #network3d{height:55vh;min-height:300px}}
+
+.explorer .signal-switch{display:inline-flex;align-items:center;gap:10px;min-height:42px;padding:8px 12px;font-size:13px;cursor:pointer}
+.switch-track{display:block;position:relative;width:36px;height:20px;border-radius:20px;background:#4a5366;transition:background .18s}
+.switch-track::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .18s}
+[aria-checked=true] .switch-track{background:#36b8cd}
+[aria-checked=true] .switch-track::after{transform:translateX(16px)}
+#nn-flow-state{min-width:20px;text-align:left}
+@media(prefers-reduced-motion:reduce){.switch-track,.switch-track::after{transition:none}}

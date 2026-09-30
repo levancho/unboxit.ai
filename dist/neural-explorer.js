@@ -119,7 +119,7 @@ function setMode(next){
  resize();
 }
 q('#nn-layout').onchange=e=>{layout=e.target.value;build();inspect()};
-function reflectFlow(){q('#nn-flow').textContent=flowOn?'Live flow: On':'Live flow: Off';q('#nn-flow').setAttribute('aria-pressed',String(flowOn))}
+function reflectFlow(){q('#nn-flow-state').textContent=flowOn?'On':'Off';q('#nn-flow').setAttribute('aria-checked',String(flowOn))}
 q('#nn-flow').onclick=()=>{flowOn=!flowOn;if(flowOn){flowStart=clock;if(paused)q('#motion').click()}reflectFlow()};reflectFlow();
 q('#nn-speed').oninput=e=>flowSpeed=Number(e.target.value);
 q('#mode-beginner').onclick=()=>setMode('beginner');q('#mode-advanced').onclick=()=>setMode('advanced');q('#nn-rate').oninput=e=>q('#nn-rate-value').textContent=Number(e.target.value).toFixed(2);
