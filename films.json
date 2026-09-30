@@ -1,0 +1,24 @@
+{
+  "learning": {
+    "title": "From examples to predictions",
+    "scenes": [
+      {"title": "AI isn't magic.", "accent": "It's patterns.", "narration": "AI is not magic. It learns useful patterns from examples."},
+      {"title": "Start with examples.", "accent": "Each dot is a day.", "narration": "Imagine predicting ice cream sales from the temperature. Each dot is a day we have already seen."},
+      {"title": "Guess. Compare. Adjust.", "accent": "Repeat.", "narration": "At first, our model guesses badly. Training compares its predictions with the real answers, then adjusts its numbers to make the errors smaller. Repeat that process, and a useful pattern starts to emerge."},
+      {"title": "Connections learn.", "accent": "Layer by layer.", "narration": "Neural networks do this with many connected layers. The connections have strengths, called weights, that change during training."},
+      {"title": "Now try something new.", "accent": "Test what it learned.", "narration": "Once trained, the model can make predictions about new examples. But a good fit to old data is not enough. Test it on new data."},
+      {"title": "A prediction", "accent": "isn't a guarantee.", "narration": "And remember: a prediction can still be wrong."}
+    ]
+  },
+  "prediction": {
+    "title": "One little token at a time",
+    "scenes": [
+      {"title": "How does AI write?", "accent": "One piece at a time.", "narration": "How does AI write a sentence? A language model predicts the next piece of text, called a token."},
+      {"title": "Words become tokens.", "accent": "Small pieces of text.", "narration": "A token might be a whole word, a word part, or punctuation. The text so far provides context."},
+      {"title": "Context changes the odds.", "accent": "What comes next?", "narration": "After the cat sat on the, mat might be likely. Moon is possible, but less likely. These example probabilities are made up."},
+      {"title": "Predict. Add. Repeat.", "accent": "A sentence grows.", "narration": "The system chooses a token, adds it to the sentence, and predicts again. Repeating this can produce a whole paragraph."},
+      {"title": "Turn up the surprise.", "accent": "Not the intelligence.", "narration": "A setting called temperature changes how varied the choices are. More variety does not mean more truth."},
+      {"title": "Sounds convincing?", "accent": "Still check the facts.", "narration": "A fluent answer can still be wrong. Treat important answers as a starting point, and check the evidence."}
+    ]
+  }
+}
