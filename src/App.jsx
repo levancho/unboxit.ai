@@ -1,3 +1,4 @@
+import Introduction from './components/Introduction';
 import Header from './components/Header';
 import TrainingLab from './components/TrainingLab';
 import PredictionLab from './components/PredictionLab';
@@ -7,32 +8,12 @@ import NeuralExplorer from './components/NeuralExplorer';
 import DiscoveryLab from './components/DiscoveryLab';
 export default function App(){ return <>
 <a className="skip" href="#learn">{"Skip to lessons"}</a>
-<Header /><main><section className="hero" id="learn"><div className="hero-copy"><div className="eyebrow"><span className="tiny-line"></span>
-{"A SMALL GUIDE TO A BIG IDEA"}</div>
-<h1>{"AI isn’t magic."}<br />{"Let’s "}<em>{"unbox"}</em>
-{" it."}</h1>
-<p>{"You don’t need a tech degree. Just a little curiosity."}<br className="desktop" />{" See how machines learn, make predictions, and sometimes get it completely wrong."}</p>
-<div className="hero-actions"><a className="button orange" href="#playground">{"Let me try it"}</a>
-<a className="text-link" href="#films">{"▶ Watch the mini films"}</a>
-</div>
-<div className="hero-foot"><span>{"NO JARGON."}</span>
-<span>{"NO MATH HOMEWORK."}</span>
-<span>{"ALL CURIOSITY."}</span>
-</div>
-</div>
-<NeuralExplorer /><p className="explorer-note">{"Two real neural networks running in your browser. Beginner has 68 neurons; Advanced has 198. Each keeps its own training progress. Signal timing and 3D positions are illustrative. It learns synthetic 5 × 7 examples of three digits—not general handwriting. These scores measure relative preference, not guaranteed accuracy."}</p>
-</section>
-<div className="chapter-strip"><span>{"01 "}<b>{"Learn from examples"}</b>
-</span>
-<span>{"02 "}<b>{"Find the pattern"}</b>
-</span>
-<span>{"03 "}<b>{"Make a prediction"}</b>
-</span>
-<span>{"04 "}<b>{"Check the answer"}</b>
-</span>
-</div>
-<div id="chapters"><TrainingLab /><div className="band"><PredictionLab /></div>
-<DiscoveryLab /><Films /><div className="band"><section className="section" id="reality"><div className="section-head"><div><span className="section-number">{"04 / KEEP YOUR HUMAN BRAIN SWITCHED ON"}</span>
+<Header /><main><Introduction /><div id="chapters"><TrainingLab /><div className="band"><PredictionLab /></div>
+<section className="network-lesson" id="network" aria-labelledby="network-title">
+<div className="section-head"><div><span className="section-number">READY TO LOOK A LITTLE CLOSER?</span><h2 id="network-title">Look inside a<br />neural network.</h2></div><p>A neural network is one way AI learns patterns. Start in Beginner mode: pick a digit, press “Teach the network,” and watch its guesses change. Advanced mode is optional.</p></div>
+<NeuralExplorer />
+<details className="network-explanation"><summary>About this experiment and its limits</summary><p>Two real neural networks run in your browser. Beginner has 68 neurons; Advanced has 198. Each keeps its own training progress. The 3D layout and signal timing are illustrations. These models learn small, synthetic examples of 0, 1, and 8—not general handwriting. Their scores are predictions, not guarantees.</p></details>
+</section><DiscoveryLab /><Films /><div className="band"><section className="section" id="reality"><div className="section-head"><div><span className="section-number">{"04 / KEEP YOUR HUMAN BRAIN SWITCHED ON"}</span>
 <h2>{"Useful? Absolutely."}<br />{"Infallible? Absolutely not."}</h2>
 </div>
 <p>{"AI is a broad family of tools. These demos explain machine learning and language generation—two important parts of it."}</p>
