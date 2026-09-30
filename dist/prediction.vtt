@@ -1,25 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:07.082
+00:00:00.000 --> 00:00:06.953
 How does AI write a sentence? A language model predicts the next piece of text, called a token.
 
-00:00:07.082 --> 00:00:14.164
+00:00:06.953 --> 00:00:13.906
 A token might be a whole word, a word part, or punctuation. The text so far provides context.
 
-00:00:14.164 --> 00:00:21.640
+00:00:13.906 --> 00:00:21.246
 After the cat sat on the, mat might be likely. Moon is possible, but less likely. These example probabilities
 
-00:00:21.640 --> 00:00:22.820
+00:00:21.246 --> 00:00:22.405
 are made up.
 
-00:00:22.820 --> 00:00:30.296
+00:00:22.405 --> 00:00:29.744
 The system chooses a token, adds it to the sentence, and predicts again. Repeating this can produce a whole
 
-00:00:30.296 --> 00:00:30.689
+00:00:29.744 --> 00:00:30.130
 paragraph.
 
-00:00:30.689 --> 00:00:37.378
+00:00:30.130 --> 00:00:36.697
 A setting called temperature changes how varied the choices are. More variety does not mean more truth.
 
-00:00:37.378 --> 00:00:44.460
+00:00:36.697 --> 00:00:43.651
 A fluent answer can still be wrong. Treat important answers as a starting point, and check the evidence.

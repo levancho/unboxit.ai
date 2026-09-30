@@ -1,28 +1,28 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.936
+00:00:00.000 --> 00:00:03.852
 AI is not magic. It learns useful patterns from examples.
 
-00:00:03.936 --> 00:00:10.627
+00:00:03.852 --> 00:00:10.402
 Imagine predicting ice cream sales from the temperature. Each dot is a day we have already seen.
 
-00:00:10.627 --> 00:00:17.319
+00:00:10.402 --> 00:00:16.951
 At first, our model guesses badly. Training compares its predictions with the real answers, then adjusts its
 
-00:00:17.319 --> 00:00:23.616
+00:00:16.951 --> 00:00:23.115
 numbers to make the errors smaller. Repeat that process, and a useful pattern starts to emerge.
 
-00:00:23.616 --> 00:00:29.520
+00:00:23.115 --> 00:00:28.894
 Neural networks do this with many connected layers. The connections have strengths, called weights, that
 
-00:00:29.520 --> 00:00:30.701
+00:00:28.894 --> 00:00:30.049
 change during training.
 
-00:00:30.701 --> 00:00:38.573
+00:00:30.049 --> 00:00:37.754
 Once trained, the model can make predictions about new examples. But a good fit to old data is not enough.
 
-00:00:38.573 --> 00:00:40.541
+00:00:37.754 --> 00:00:39.680
 Test it on new data.
 
-00:00:40.541 --> 00:00:43.690
+00:00:39.680 --> 00:00:42.762
 And remember: a prediction can still be wrong.
