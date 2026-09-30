@@ -2,3 +2,8 @@ __pycache__/
 .sites-runtime/
 *.tar.gz
 *.tar
+.wrangler/
+node_modules/
+dist/
+.env*
+!.env.example
