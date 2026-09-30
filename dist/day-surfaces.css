@@ -1,0 +1,39 @@
+/* Complete daytime surfaces. Chart colors are adjusted by their renderers. */
+[data-theme=day] body,[data-theme=day] .band{background:#fff}
+[data-theme=day] .explorer{--muted:#52617a;--white:#1b2943;--orange:#bc4225;--blue:#4864bb;--lime:#3e671d;color:#1b2943;color-scheme:light;background:#fff;border-color:#cad5e5;box-shadow:0 16px 48px #21345412}
+[data-theme=day] .explorer-top,[data-theme=day] .explorer[data-mode=advanced] .explorer-top,[data-theme=day] .input-dock,[data-theme=day] .inspect-dock,[data-theme=day] .explorer-bottom,[data-theme=day] .prediction-dock,[data-theme=day] .advanced-summary,[data-theme=day] [data-mode=advanced] .advanced-summary{background:#fff;border-color:#d9e1ee}
+[data-theme=day] .network-stage,[data-theme=day] [data-mode=advanced] .network-stage,[data-theme=day] .experiment-stage{background:#fff;color:#1b2943;color-scheme:light;--lime:#3e671d}
+[data-theme=day] .explorer button,[data-theme=day] .explorer select,[data-theme=day] .deep-controls select{background:#f1f5fc;color:#283c60;border-color:#b8c7de}
+[data-theme=day] .explorer button:hover{background:#e3ebfb;border-color:#829ac2}
+[data-theme=day] .explorer .button.orange{background:#bc4225;color:#fff;border-color:#bc4225}
+[data-theme=day] .explorer .mode-toggle{background:#eef3fa;border-color:#c1cfe3}
+[data-theme=day] .explorer .mode-toggle button{color:#52617a}
+[data-theme=day] .explorer .mode-toggle button[aria-pressed=true]{background:#d8e7ff;color:#183b77}
+[data-theme=day] .explorer #nn-orbit[aria-pressed=true],[data-theme=day] .explorer #nn-flow[aria-checked=true]{background:#e2f1d5;color:#31551d;border-color:#9ebc86;box-shadow:none}
+[data-theme=day] .explorer-title span{color:#445d84;border-color:#bdcce1}
+[data-theme=day] .explorer-top small,[data-theme=day] .dock-label,[data-theme=day] .stage-hint,[data-theme=day] .camera-range,[data-theme=day] .model-info,[data-theme=day] .input-dock #nn-reset,[data-theme=day] .inspect-dock p,[data-theme=day] .inspect-dock small,[data-theme=day] .inspector-eyebrow,[data-theme=day] .inspect-dock h4,[data-theme=day] .neuron-math,[data-theme=day] .explorer-bottom p,[data-theme=day] .nn-legend,[data-theme=day] .nn-legend .negative,[data-theme=day] .advanced-summary,[data-theme=day] .training-settings label,[data-theme=day] .deep-controls label,[data-theme=day] .deep-hud span,[data-theme=day] .prediction-dock>span{color:#52617a}
+[data-theme=day] .stage-badge,[data-theme=day] .digit-prob b{color:#416d23}
+[data-theme=day] .deep-hud b,[data-theme=day] .advanced-summary b,[data-theme=day] .activation{color:#294e93}
+[data-theme=day] .inspect-orbit{color:#627cab}
+[data-theme=day] .positive{color:#355da7}[data-theme=day] .negative{color:#b84c2a}
+[data-theme=day] .explorer .pixel{background:#edf2fa;border-color:#bfcee4}
+[data-theme=day] .explorer .pixel.on{background:#5575bd;border-color:#34558f;box-shadow:0 0 8px #5575bd22}
+[data-theme=day] .prediction-dock .bar{background:#e2e9f3}[data-theme=day] .prediction-dock .bar i{background:#678e3b}
+[data-theme=day] .explorer #nn-disable[aria-pressed=true]{background:#ffe1d6;border-color:#cc886d;color:#8c341d}
+[data-theme=day] .explorer.expanded{box-shadow:0 0 0 30px #fff}
+[data-theme=day] .model-info,[data-theme=day] .training-settings,[data-theme=day] .neuron-math{border-color:#d4deec}
+[data-theme=day] .stage-caption,[data-theme=day] .stage-footnote,[data-theme=day] .map-bottom span:last-child,[data-theme=day] .vision-grids h4,[data-theme=day] .attention-bars{color:#52617a}
+[data-theme=day] .stage-caption span:last-child{color:#446c25}
+[data-theme=day] .map-bottom{color:#355ba7}[data-theme=day] .map-bottom span:nth-child(2){color:#a14c22}
+[data-theme=day] #decision-map{border-color:#a9bce0}
+[data-theme=day] .attention-words button{background:#edf3ff;border-color:#b5c7e5;color:#35527e}
+[data-theme=day] .attention-words button[aria-pressed=true]{background:#e0eecf;border-color:#97b57e;color:#34551c}
+[data-theme=day] .attention-bars>div>div{background:linear-gradient(0deg,#e8eef8,transparent)}
+[data-theme=day] .attention-bars b{color:#344e77}
+[data-theme=day] .vision-input button{background:#f7f9fd;border-color:#b3c3db}
+[data-theme=day] .vision-input button.lit{background:#5979bf}
+[data-theme=day] .vision-input button.in-patch{border-color:#5c842c;box-shadow:none}
+[data-theme=day] .vision-output button{color:#183252;border-color:#9cafd0}
+[data-theme=day] .vision-output button[aria-pressed=true]{outline-color:#4e791d}
+[data-theme=day] .vision-formula{background:#f0f5fd;border-color:#b9c9e1;color:#365c20}
+[data-theme=day] .theme-track{background:#748bb6}
