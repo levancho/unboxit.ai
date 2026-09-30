@@ -1,0 +1,10 @@
+export const SHAPE=[35,18,12,3];
+export const DIGITS=[0,1,8];
+const patterns=[['01110','11011','11011','11011','11011','11011','01110'],['00100','01100','00100','00100','00100','00100','01110'],['01110','11011','11011','01110','11011','11011','01110']];
+export const TEMPLATES=patterns.map(rows=>rows.join('').split('').map(Number));
+export function seeded(seed=87){return()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296}}
+export class NeuralModel{
+ constructor(seed=87){this.random=seeded(seed);this.rounds=0;this.weights=[];this.biases=[];for(let l=1;l<SHAPE.length;l++){this.weights.push(Array.from({length:SHAPE[l]},()=>Array.from({length:SHAPE[l-1]},()=> (this.random()*2-1)*Math.sqrt(6/(SHAPE[l]+SHAPE[l-1])))));this.biases.push(Array(SHAPE[l]).fill(0))}}
+ forward(input,disabled=null){let acts=[input.slice()],sums=[input.slice()];for(let l=0;l<this.weights.length;l++){let z=this.weights[l].map((row,j)=>row.reduce((v,w,i)=>v+w*acts[l][i],this.biases[l][j]));sums.push(z);if(l===this.weights.length-1){let max=Math.max(...z),exp=z.map(v=>Math.exp(v-max)),sum=exp.reduce((a,b)=>a+b,0);acts.push(exp.map(v=>v/sum))}else acts.push(z.map((v,i)=>disabled?.l===l+1&&disabled?.i===i?0:Math.tanh(v)))}return{acts,sums,probabilities:acts.at(-1)}}
+ trainBatch(batchSize=12,rate=.07){let dw=this.weights.map(layer=>layer.map(row=>row.map(()=>0))),db=this.biases.map(row=>row.map(()=>0)),loss=0;for(let b=0;b<batchSize;b++){let label=Math.floor(this.random()*3),x=TEMPLATES[label].map(v=>this.random()<.08?1-v:v),{acts}=this.forward(x);loss-=Math.log(Math.max(1e-12,acts.at(-1)[label]));let delta=acts.at(-1).map((p,i)=>p-(i===label?1:0));for(let l=this.weights.length-1;l>=0;l--){for(let j=0;j<delta.length;j++){db[l][j]+=delta[j];for(let i=0;i<acts[l].length;i++)dw[l][j][i]+=delta[j]*acts[l][i]}if(l>0)delta=acts[l].map((a,i)=>this.weights[l].reduce((s,row,j)=>s+row[i]*delta[j],0)*(1-a*a))}}for(let l=0;l<this.weights.length;l++)for(let j=0;j<this.weights[l].length;j++){this.biases[l][j]-=rate*db[l][j]/batchSize;for(let i=0;i<this.weights[l][j].length;i++)this.weights[l][j][i]-=rate*dw[l][j][i]/batchSize}this.rounds++;return loss/batchSize}
+}
