@@ -40,7 +40,7 @@ export default function App(){ return <>
 </main>
 <footer><a className="brand" href="#">{"UNBOXIT.AI"}</a>
 <p>{"A little less mystery. A lot more understanding."}</p>
-<small className="build-credit">Built with Astra</small>
+<div className="footer-support"><a className="coffee-link" href="https://ko-fi.com/l3vcoffe" target="_blank" rel="noopener noreferrer" aria-label="Buy me a coffee on Ko-fi (opens in a new tab)"><span aria-hidden="true">☕</span> Buy me a coffee</a><small className="build-credit">Built with Astra</small></div>
 </footer>
 
 </>; }
