@@ -20,3 +20,24 @@ test('beginner and advanced are separate models with valid outputs', () => {
   a.trainBatch(12,.07);assert.equal(b.rounds,0);
   for(const m of [a,b])assert.ok(Math.abs(m.forward(TEMPLATES[0]).probabilities.reduce((s,p)=>s+p,0)-1)<1e-10);
 });
+
+import {outputDotCounts, probabilityLabel} from '../src/lib/output-flow.mjs';
+test('output dots follow predictions, with no losing dots at near-total confidence', () => {
+  for(const budget of [12,16]) {
+    assert.deepEqual(outputDotCounts([.0001,.0001,.9998],budget),[0,0,budget]);
+    const split=outputDotCounts([.5,.25,.25],budget);
+    assert.equal(split.reduce((a,b)=>a+b,0),budget);
+    assert.equal(split[0],budget/2);
+    assert.deepEqual(outputDotCounts([1,0,0],budget),[budget,0,0]);
+  }
+  assert.equal(probabilityLabel(.9998),'>99.9%');
+  assert.equal(probabilityLabel(.0001),'<0.1%');
+});
+test('trained digit eight drives the output dots in both architectures', () => {
+  for(const model of [new NeuralModel(),new NeuralModel(187,[35,64,48,32,16,3])]) {
+    for(let i=0;i<900;i++) model.trainBatch(12,.07);
+    const probabilities=model.forward(TEMPLATES[2]).probabilities;
+    assert.ok(probabilities[2]>.98);
+    assert.deepEqual(outputDotCounts(probabilities,model.shape.at(-2)),[0,0,model.shape.at(-2)]);
+  }
+});

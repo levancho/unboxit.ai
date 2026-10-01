@@ -49,6 +49,7 @@ return (<div className="explorer" id="explorer" data-mode="beginner" ref={rootRe
 {" Negative activation"}</span>
 <span>{"Brightness = strength"}</span>
 </div>
+<p className="output-flow-note">Output dots show the relative prediction scores. Tiny scores may have no dots; all three digits are still calculated.</p>
 <div className="deep-controls"><label className="advanced-only">{"Structure"}<select id="nn-layout"><option value="rings">{"Neural rings"}</option>
 <option value="lattice">{"Layer lattice"}</option>
 </select>

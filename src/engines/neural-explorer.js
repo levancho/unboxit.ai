@@ -1,3 +1,4 @@
+import { outputDotCounts, probabilityLabel } from '../lib/output-flow.mjs';
 import{NeuralModel,SHAPE as BASIC_SHAPE,DIGITS,TEMPLATES}from'../lib/neural-model.mjs';
 export function mountNeuralExplorer(root) {
 const cleanup = [];
@@ -8,7 +9,7 @@ const frames = new Set();
 const frame = fn => { if(!mounted) return; const id = window.requestAnimationFrame(t => { frames.delete(id); if(mounted) fn(t); }); frames.add(id); return id; };
 const q=s=>root.querySelector(s)||document.querySelector(s),canvas=q('#network3d'),ctx=canvas.getContext('2d'),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let SHAPE=BASIC_SHAPE;const models={beginner:new NeuralModel(),advanced:new NeuralModel(187,[35,64,48,32,16,3])},losses={beginner:null,advanced:null};let mode='beginner',disabledNeuron=null,lastLoss=null,layout='rings',flowOn=!reduced,flowSpeed=1,flowStart=0;let model=models.beginner,input=TEMPLATES[0].slice(),result=model.forward(input),yaw=-.75,pitch=.24,zoom=1,spread=1,auto=!reduced,running=false,paused=reduced,selected=null,hovered=null,points=[],edges=[],projected=[],w=800,h=450,last=0,clock=0,pulse=-99,drag=null,drawValue=1,drawing=false,visible=true;
-let names=[];
+let names=[],outputDots=[];
 function build(){
  points=[];edges=[];names=SHAPE.map((n,l)=>l===0?'Input pixels':l===SHAPE.length-1?'Prediction':'Hidden layer '+l);
  const offsets=[];let offset=0;
@@ -73,7 +74,9 @@ function render(t){
   ctx.strokeStyle=`rgba(${rgb},${alpha})`;ctx.lineWidth=linked?1.5:view==='weights'?Math.min(2,.25+Math.abs(weight)*2):.55;
   ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
   let travel=(scan-e.l*.65)/.65;
-  if(travel>=0&&travel<=1&&(advanced?idx%19===0:(e.i+e.j)%3===0)){
+  const outputEdge=e.l===SHAPE.length-2;
+  const showDot=outputEdge?Math.floor((e.i+1)*outputDots[e.j]/SHAPE[e.l])>Math.floor(e.i*outputDots[e.j]/SHAPE[e.l]):(advanced?idx%19===0:(e.i+e.j)%3===0);
+  if(travel>=0&&travel<=1&&showDot){
    const x=a.x+(b.x-a.x)*travel,y=a.y+(b.y-a.y)*travel,tail=Math.max(0,travel-.09);
    ctx.beginPath();ctx.moveTo(a.x+(b.x-a.x)*tail,a.y+(b.y-a.y)*tail);ctx.lineTo(x,y);ctx.strokeStyle=`rgba(${rgb},.8)`;ctx.lineWidth=1.5;ctx.stroke();
    ctx.fillStyle=light?'#183986':'#e4faff';ctx.beginPath();ctx.arc(x,y,advanced?1.8:2.3,0,Math.PI*2);ctx.fill();
@@ -81,12 +84,15 @@ function render(t){
  });
  [...points.keys()].sort((a,b)=>projected[b].z-projected[a].z).forEach(k=>{
   let p=points[k],v=projected[k],a=Math.abs(active(p)),r=Math.max(2.1,v.s*(p.l===SHAPE.length-1?.14:advanced?.054:.08)),rgb=color(p),lit=scan>=p.l*.65&&scan<p.l*.65+.65;
+  const isOutput=p.l===SHAPE.length-1;
+  if(isOutput)lit=lit&&outputDots[p.i]>0;
+  const strength=isOutput?a:1;
   const isOff=disabledNeuron?.l===p.l&&disabledNeuron?.i===p.i,halo=lit?6:4;
-  const grad=ctx.createRadialGradient(v.x,v.y,0,v.x,v.y,r*halo);grad.addColorStop(0,`rgba(${rgb},${(lit?.36:.12)+a*.22})`);grad.addColorStop(1,`rgba(${rgb},0)`);ctx.fillStyle=grad;ctx.fillRect(v.x-r*halo,v.y-r*halo,r*halo*2,r*halo*2);
+  const grad=ctx.createRadialGradient(v.x,v.y,0,v.x,v.y,r*halo);grad.addColorStop(0,`rgba(${rgb},${(lit?.36:.12)*strength+a*.22})`);grad.addColorStop(1,`rgba(${rgb},0)`);ctx.fillStyle=grad;ctx.fillRect(v.x-r*halo,v.y-r*halo,r*halo*2,r*halo*2);
   ctx.beginPath();ctx.arc(v.x,v.y,r,0,Math.PI*2);
-  const orb=ctx.createRadialGradient(v.x-r*.3,v.y-r*.35,0,v.x,v.y,r);orb.addColorStop(0,`rgba(241,246,255,${lit?1:.5+a*.5})`);orb.addColorStop(.4,`rgba(${rgb},${.4+a*.6})`);orb.addColorStop(1,`rgba(${rgb},.23)`);ctx.fillStyle=orb;ctx.fill();
+  const orb=ctx.createRadialGradient(v.x-r*.3,v.y-r*.35,0,v.x,v.y,r);orb.addColorStop(0,`rgba(241,246,255,${isOutput?.15+a*.85:lit?1:.5+a*.5})`);orb.addColorStop(.4,`rgba(${rgb},${isOutput?.12+a*.88:.4+a*.6})`);orb.addColorStop(1,`rgba(${rgb},.23)`);ctx.fillStyle=orb;ctx.fill();
   if(isOff){ctx.strokeStyle='#fc826d';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(v.x-r-3,v.y-r-3);ctx.lineTo(v.x+r+3,v.y+r+3);ctx.stroke()}
-  if(k===focus||lit&&(!advanced||p.i%4===0)){ctx.beginPath();ctx.arc(v.x,v.y,r+4,0,Math.PI*2);ctx.strokeStyle=k===focus?(light?'#172c58':'#ffffff'):`rgba(${rgb},.45)`;ctx.lineWidth=1;ctx.stroke()}
+  if(k===focus||lit&&(isOutput||!advanced||p.i%4===0)){ctx.beginPath();ctx.arc(v.x,v.y,r+4,0,Math.PI*2);ctx.strokeStyle=k===focus?(light?'#172c58':'#ffffff'):`rgba(${rgb},.45)`;ctx.lineWidth=1;ctx.stroke()}
   if(p.l===SHAPE.length-1){ctx.fillStyle=light?'#386317':'#d7fa78';ctx.font='600 13px Arial';ctx.fillText(DIGITS[p.i]+'',v.x+r+8,v.y+5)}
  });
  let occupied=[];for(let l=0;l<SHAPE.length;l++){let p=project({x:(l-(SHAPE.length-1)/2)*(advanced?1.72:2.6),y:advanced?-2.45:-1.85,z:0});if(occupied.some(x=>Math.abs(p.x-x)<64))continue;occupied.push(p.x);ctx.font='11px Arial';ctx.textAlign='center';ctx.fillStyle=advanced?`rgb(${palette[l]})`:(light?'#485d7b':'#9aa9c8');ctx.fillText(SHAPE[l]+(l===0?' INPUTS':l===SHAPE.length-1?' OUTPUTS':' · H'+l),p.x,p.y);ctx.textAlign='left'}
@@ -96,7 +102,7 @@ function render(t){
  }
 }
 frame(render);const intersectionObserver = new IntersectionObserver(entries=>{visible=entries[0].isIntersecting}); intersectionObserver.observe(root); cleanup.push(() => intersectionObserver.disconnect());
-function probabilities(){let values=result.probabilities.map(v=>Math.round(v*100)),diff=100-values.reduce((a,b)=>a+b,0);values[result.probabilities.indexOf(Math.max(...result.probabilities))]+=diff;DIGITS.forEach((v,i)=>{q('#nn-p'+i).textContent=values[i]+'%';q('#nn-b'+i).style.width=values[i]+'%'});q('#nn-rounds').textContent=model.rounds;inspect()}
+function probabilities(){outputDots=outputDotCounts(result.probabilities,SHAPE.at(-2));DIGITS.forEach((v,i)=>{q('#nn-p'+i).textContent=probabilityLabel(result.probabilities[i]);q('#nn-b'+i).style.width=(result.probabilities[i]*100)+'%'});q('#nn-rounds').textContent=model.rounds;inspect()}
 function calculate(){result=model.forward(input,disabledNeuron);probabilities()}
 function grid(){q('#pixel-grid').innerHTML=input.map((v,i)=>`<button type="button" class="pixel ${v?'on':''}" aria-label="Row ${Math.floor(i/5)+1}, column ${i%5+1}" aria-pressed="${!!v}" data-pixel="${i}"></button>`).join('')}
 function paint(el){let i=Number(el.dataset.pixel);input[i]=drawValue;el.classList.toggle('on',!!drawValue);el.setAttribute('aria-pressed',String(!!drawValue));calculate()}
@@ -135,7 +141,7 @@ q('#nn-disable').onclick=()=>{if(selected==null)return;const p=points[selected];
 
 on(root,'keydown',e=>{if(e.key!=='Tab'||!root.classList.contains('expanded'))return;const items=[...root.querySelectorAll('button:not(:disabled),select,input,[tabindex="0"]')].filter(el=>el.getClientRects().length);const first=items[0],end=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();end.focus()}else if(!e.shiftKey&&document.activeElement===end){e.preventDefault();first.focus()}});
 const modelContext=document.modelContext;
-if(modelContext?.registerTool){const lifecycle=new AbortController();cleanup.push(()=>lifecycle.abort());const readState=()=>({mode,rounds:model.rounds,probabilities:result.probabilities.map((probability,i)=>({digit:DIGITS[i],probability})),disabledNeuron,selectedNeuron:selected==null?null:{layer:points[selected].l,index:points[selected].i}});const registrations=[{name:'read_neural_network',title:'Read neural network',description:'Read the learning explorer’s current mode, training rounds, neuron selection, and output probabilities.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>readState()},{name:'configure_neural_explorer',title:'Configure neural explorer',description:'Choose Beginner or Advanced mode and optionally load a digit template. Updates the visible explorer; does not train or reset weights.',inputSchema:{type:'object',properties:{mode:{type:'string',enum:['beginner','advanced']},digit:{type:'integer',enum:[0,1,8]}},required:['mode'],additionalProperties:false},annotations:{readOnlyHint:false},execute:(value)=>{if(!value||!['beginner','advanced'].includes(value.mode)||Object.keys(value).some(k=>!['mode','digit'].includes(k))||(value.digit!==undefined&&!DIGITS.includes(value.digit)))throw new Error('Choose a supported mode and an optional digit: 0, 1, or 8.');setMode(value.mode);if(value.digit!==undefined){input=TEMPLATES[DIGITS.indexOf(value.digit)].slice();grid();calculate();send()}return readState()}}];for(const tool of registrations){try{Promise.resolve(modelContext.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{})}catch{}}on(window,'pagehide',()=>lifecycle.abort(),{once:true})}
+if(modelContext?.registerTool){const lifecycle=new AbortController();cleanup.push(()=>lifecycle.abort());const readState=()=>({mode,rounds:model.rounds,probabilities:result.probabilities.map((probability,i)=>({digit:DIGITS[i],probability,animatedDots:outputDots[i]})),disabledNeuron,selectedNeuron:selected==null?null:{layer:points[selected].l,index:points[selected].i}});const registrations=[{name:'read_neural_network',title:'Read neural network',description:'Read the learning explorer’s current mode, training rounds, neuron selection, and output probabilities.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:()=>readState()},{name:'configure_neural_explorer',title:'Configure neural explorer',description:'Choose Beginner or Advanced mode and optionally load a digit template. Updates the visible explorer; does not train or reset weights.',inputSchema:{type:'object',properties:{mode:{type:'string',enum:['beginner','advanced']},digit:{type:'integer',enum:[0,1,8]}},required:['mode'],additionalProperties:false},annotations:{readOnlyHint:false},execute:(value)=>{if(!value||!['beginner','advanced'].includes(value.mode)||Object.keys(value).some(k=>!['mode','digit'].includes(k))||(value.digit!==undefined&&!DIGITS.includes(value.digit)))throw new Error('Choose a supported mode and an optional digit: 0, 1, or 8.');setMode(value.mode);if(value.digit!==undefined){input=TEMPLATES[DIGITS.indexOf(value.digit)].slice();grid();calculate();send()}return readState()}}];for(const tool of registrations){try{Promise.resolve(modelContext.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{})}catch{}}on(window,'pagehide',()=>lifecycle.abort(),{once:true})}
 
 return () => { mounted = false; frames.forEach(id => window.cancelAnimationFrame(id)); listeners.abort(); cleanup.forEach(fn => fn()); document.body.classList.remove('explorer-open'); };
 }
