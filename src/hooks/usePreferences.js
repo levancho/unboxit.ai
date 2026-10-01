@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 export function usePreferences() {
-  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'day');
-  const [paused, setPaused] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [theme, setTheme] = useState(() => typeof document === 'undefined' ? 'day' : document.documentElement.dataset.theme || 'day');
+  const [paused, setPaused] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme === 'night' ? 'dark' : 'light';
