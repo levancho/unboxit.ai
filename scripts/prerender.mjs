@@ -14,6 +14,8 @@ try {
   assert.ok(html.includes('UnboxIt is a free, hands-on guide'));
   assert.ok(html.includes('learning-transcript'));
   assert.ok(html.includes('rel="canonical" href="https://unboxit.ai/"'));
+  assert.ok(html.includes('<div id="webrank-badge"'), 'Expected the WebRank badge in the footer');
+  assert.ok(html.includes('webrank.ge/counter/403500812ef037d102d0/badge.svg'), 'Expected the WebRank no-script badge');
   const data = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   assert.equal(data['@graph'][0].url, 'https://unboxit.ai/');
   await writeFile('dist/index.html', html);

@@ -7,6 +7,7 @@ import Quiz from './components/Quiz';
 import Films from './components/Films';
 import NeuralExplorer from './components/NeuralExplorer';
 import DiscoveryLab from './components/DiscoveryLab';
+import WebRankBadge from './components/WebRankBadge';
 export default function App(){ return <>
 <a className="skip" href="#learn">{"Skip to lessons"}</a>
 <Header /><main><Introduction /><div id="chapters"><TrainingLab /><div className="band"><PredictionLab /></div>
@@ -42,6 +43,7 @@ export default function App(){ return <>
 <footer><a className="brand" href="#">{"UNBOXIT.AI"}</a>
 <p>{"A little less mystery. A lot more understanding."}</p>
 <div className="footer-support"><a className="coffee-link" href="https://ko-fi.com/l3vcoffe" target="_blank" rel="noopener noreferrer" aria-label="Buy me a coffee on Ko-fi (opens in a new tab)"><span aria-hidden="true">☕</span> Buy me a coffee</a><small className="build-credit">Built with Astra</small></div>
+<WebRankBadge />
 </footer>
 <BackToTop />
 
