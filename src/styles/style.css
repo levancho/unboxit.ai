@@ -3,5 +3,5 @@
 .webrank-badge{display:inline-flex;min-width:88px;min-height:31px}
 /* Phones: the badge shares the first footer row with the brand instead of adding a row of its own. */
 /* Wide screens: keep the badge clear of the floating back-to-top button. */
-@media(min-width:651px){footer{padding-right:calc(5% + 76px)}}
+@media(min-width:651px){footer{padding-right:calc(5% + 76px);justify-content:flex-start;gap:20px 28px}footer>.footer-support{margin-left:auto}}
 @media(max-width:650px){footer{flex-direction:row;flex-wrap:wrap;align-items:center}footer>.brand{order:1}footer>.webrank-badge{order:2;margin-left:auto}footer>p{order:3;flex:1 0 100%}footer>.footer-support{order:4}}
