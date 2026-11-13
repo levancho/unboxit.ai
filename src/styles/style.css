@@ -5,3 +5,5 @@
 /* Wide screens: keep the badge clear of the floating back-to-top button. */
 @media(min-width:651px){footer{padding-right:calc(5% + 76px);justify-content:flex-start;gap:20px 28px}footer>.footer-support{margin-left:auto}}
 @media(max-width:650px){footer{flex-direction:row;flex-wrap:wrap;align-items:center}footer>.brand{order:1}footer>.webrank-badge{order:2;margin-left:auto}footer>p{order:3;flex:1 0 100%}footer>.footer-support{order:4}}
+footer>.elevenlabs-affiliate{flex:0 0 100%;display:grid;gap:6px;font-size:13px;line-height:1.5;order:5}footer>.elevenlabs-affiliate a{color:var(--white);text-underline-offset:3px}footer>.elevenlabs-affiliate small{font-size:11px;color:var(--muted)}
+footer{flex-wrap:wrap}
