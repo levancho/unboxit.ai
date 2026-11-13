@@ -44,7 +44,7 @@ export default function App(){ return <>
 <p>{"A little less mystery. A lot more understanding."}</p>
 <div className="footer-support"><a className="coffee-link" href="https://ko-fi.com/l3vcoffe" target="_blank" rel="noopener noreferrer" aria-label="Buy me a coffee on Ko-fi (opens in a new tab)"><span aria-hidden="true">☕</span> Buy me a coffee</a><small className="build-credit">Built with Astra</small></div>
 <WebRankBadge />
-<div className="elevenlabs-affiliate"><a href="https://try.elevenlabs.io/t4ttmfwlto3y" target="_blank" rel="sponsored noopener">Give your content a voice. Try ElevenLabs</a><small>We may earn a commission through this link.</small></div>
+<div className="elevenlabs-affiliate"><a href="https://try.elevenlabs.io/t4ttmfwlto3y" target="_blank" rel="sponsored noopener">Try ElevenLabs</a></div>
 </footer>
 <BackToTop />
 
